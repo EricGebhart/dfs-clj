@@ -2,10 +2,10 @@
 dfs-clj
 ============
 
-A Clojure interface for [Pail](https://github.com/nathanmarz/dfs-datastores) that allows for separate definitions of serialization, vertical partitioning, and `PailStructure`.
+A Clojure interface for [dfs datastores](https://github.com/nathanmarz/dfs-datastores) that allows for separate definitions of serialization, vertical partitioning, and `PailStructure` for use with Cascalog, Thrift, graph schema, fressian, and prismatic schema.
 
-This library started as extensions to clj-pail, pail-cascalog and clj-thrift. The last few years that
-has created other libraries, pail-graph, clj-pail-tap, pail-fressian and pail-schema.  
+This library started as extensions to clj-pail, pail-cascalog and clj-thrift. The last few years
+have seen the creation of other libraries, pail-graph, clj-pail-tap, pail-fressian and pail-schema.  
 All of these libraries became rather messy to use.
 
 This library is all of those libraries combined. 
