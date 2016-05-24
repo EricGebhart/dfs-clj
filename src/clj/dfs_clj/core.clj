@@ -142,7 +142,7 @@
 
 (defn write<
   "read objects from a channel and write them to a pail."
-  [pail from-ch done-ch data-key & {:keys [log-fn limit]}]
+  [pail from-ch done-ch data-key & {:keys [log-fn limit fini-fn]}]
   (let [writer (writer pail)]
     ;; Start reading from the channel and writing to the pail.
     (go-loop [total 0]
@@ -151,13 +151,15 @@
       (let [dus (<! from-ch)]
         (if-not (or (nil? dus) (= total limit))
           (do
-            ;;(pmgr/write-objects pail-connection dus)
             (doseq [o dus]
               (write writer o))
             (recur (inc total)))
           (do
             (>! done-ch {data-key {:completed total}})
-            ;(info "Import finished: " data-key )
+
+                                        ;(info "Import finished: " data-key " - " total)
+            (when fini-fn
+              (fini-fn total))
             (close writer)))))))
 
 ;;;; TODO
