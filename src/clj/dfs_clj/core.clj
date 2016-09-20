@@ -46,6 +46,45 @@
   [path]
   (.isDirectory (io/file path)))
 
+(defn get-subdirs-at-dir
+  ([pail]
+   (get-subdirs-at-dir pail ""))
+  ([pail subdir]
+   (.getAttrsAtDir pail subdir)))
+
+(defn get-metadata-filenames
+  ([pail]
+   (get-metadata-filenames pail ""))
+  ([pail subdir]
+   (.getMetadataFileNames pail subdir)))
+
+(defn cumulative-tree-seq
+  "Returns a lazy sequence of the nodes in a tree as a file path,
+  via a depth-first walk. branch? must be a fn of one arg that returns
+  true if passed a node that can have children (but may not).  children
+  must be a fn of one arg that returns a sequence of the children. Will
+  only be called on nodes for which branch? returns true. Root is the
+  root node of the tree."
+  {:added "1.0"
+   :static true}
+  [branch? children root]
+  (let [walk (fn walk [node]
+               (lazy-seq
+                (cons node
+                      (when (branch? node)
+                        (map #(str node "/" %)
+                             (mapcat walk (children node)))))))]
+    (walk root)))
+
+(defn pail-file-seq
+  "A tree seq on pail partitions"
+  [pail dir]
+  (cumulative-tree-seq
+   (fn [f] true)
+   (fn [d] (seq (get-subdirs-at-dir pail d)))
+   dir))
+
+
 (defn move-append
   "Move contents of pail and append to another pail.
    Rename if necessary. "

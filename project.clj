@@ -1,4 +1,4 @@
-(defproject dfs-clj "0.1.1"
+(defproject dfs-clj "0.1.2"
   :description "Library for using Prismatic Schema, Pail and Cascalog."
   :url "http://github.com/EricGebhart/"
   :license {:name "Eclipse Public License"
@@ -10,15 +10,16 @@
   :java-source-paths ["src/jvm"]
 
 
-  :dependencies [[org.clojure/clojure "1.5.1"]
+  :dependencies [[org.clojure/clojure "1.7.0"]
+                 ;;[org.clojure/clojure "1.5.1"]
                  [com.backtype/dfs-datastores "1.3.4"]
                  [org.apache.hadoop/hadoop-core "1.2.0" ]
                  [com.backtype/dfs-datastores "1.3.6" :exclusions [org.slf4j/slf4j-api]]
                  [com.backtype/dfs-datastores-cascading "1.3.6"
                   :exclusions [cascading/cascading-core cascading/cascading-hadoop]]
                  [cascalog/cascalog-core "3.0.0" :exclusions [[org.slf4j/slf4j-log4j12] [log4j]]]
-                 ;[clj-thrift "0.1.3"]
-                 ;[cascalog "3.0.0" ]
+                                        ;[clj-thrift "0.1.3"]
+                                        ;[cascalog "3.0.0" ]
                  [byte-streams "0.1.7"]
                  [org.clojure/data.fressian "0.2.1"]
                  [prismatic/schema "1.1.1"]]
