@@ -1,4 +1,4 @@
-(defproject dfs-clj "0.1.2"
+(defproject dfs-clj "0.1.7"
   :description "Library for using Prismatic Schema, Pail and Cascalog."
   :url "http://github.com/EricGebhart/"
   :license {:name "Eclipse Public License"
