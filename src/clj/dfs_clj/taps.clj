@@ -61,15 +61,7 @@
 (defn get-property-key
   "look in a pail and see what the first level of partitions is named."
   [pail]
-  (let [paths (map #(clojure.string/split (str %) #"/")
-                   (dfs/get-subdirs-at-dir pail))
-        root-count (inc (count (first paths)))
-        first-levels (filter #(= root-count (count %)) paths)
-        properties (map #(keyword (last %)) (filter #(not (re-find #"pail" (last %))) first-levels))]
-
-                                        ; get the first one, this is a guess,
-                                        ;so most likely there will only be one.
-    (first properties)))
+  (keyword (first (dfs/get-subdirs-at-dir pail))))
 
 ;; ;;;; get-pail-keys are not used as far as I can tell...
 ;; (defn get-pail-keys-old
@@ -92,7 +84,7 @@
   "create paths to properties by looking in the pail."
   [pail]
   (map #(vec (filter not-empty (clojure.string/split % #"/")))
-       (filter not-empty (dfs/pail-file-seq pail ""))))
+       (filter not-empty (dfs/pail-file-seq pail))))
 
 (defn get-tap-paths-old
   "create paths to properties by looking in the pail."
@@ -133,18 +125,15 @@
   pail for actual tap paths."
   [pail-or-struct property-type]
   (let [pail-struct (dfs/get-structure pail-or-struct)
-        ;;tapmapper (.getTapMapper pail-struct)
-        ;;path-generator (.getPropertyPathGenerator pail-struct)
-        ;;type (dfs/get-schema-or-type pail-struct)
-        ]
-    (filter-tap-map (get-available-tap-map pail-or-struct)
+        tapmapper (.getTapMapper pail-struct)
+        path-generator (.getPropertyPathGenerator pail-struct)
+        type (dfs/get-schema-or-type pail-struct)]
+    (filter-tap-map
+     (if tapmapper
+       (distinct (map tapmapper (path-generator type)))
+       (get-available-tap-map pail-or-struct))
 
-                    ;;; Tapmapper is no longer needed...
-                    ;; (if tapmapper
-                    ;;   (distinct (map tapmapper (path-generator type)))
-                    ;;   (get-available-tap-map pail-or-struct))
-
-                    property-type)))
+     property-type)))
 
 (defn list-taps
   "Give a list of the Tap keys available for a Pail or Pail Structure"

@@ -41,16 +41,30 @@
 
 ;;; Basic functionality of things you want to do with pails.
 
+;;; this needs to be fixed!
 (defn check-pail-path
   "See if there is already a pail at this dataset's path."
   [path]
   (.isDirectory (io/file path)))
 
+;; (defn check-pail-path
+;;   [path]
+;;   Path pathp = new Path(path);
+;;   PailFormatFactory.create(spec);
+;;   PailSpec existing = getSpec(fs, pathp);
+;;   if(failOnExists)
+;;   if(existing!=null))
+
+(defn get-root [pail]
+  (.getInstanceRoot pail))
+
 (defn get-subdirs-at-dir
   ([pail]
    (get-subdirs-at-dir pail ""))
   ([pail subdir]
-   (.getAttrsAtDir pail subdir)))
+   (try
+     (.getAttrsAtDir pail subdir)
+     (catch Exception e nil))))
 
 (defn get-metadata-filenames
   ([pail]
@@ -78,11 +92,13 @@
 
 (defn pail-file-seq
   "A tree seq on pail partitions"
-  [pail dir]
-  (cumulative-tree-seq
-   (fn [f] true)
-   (fn [d] (seq (get-subdirs-at-dir pail d)))
-   dir))
+  ([pail]
+   (pail-file-seq pail ""))
+  ([pail dir]
+   (cumulative-tree-seq
+    (fn [f] true)
+    (fn [d] (seq (get-subdirs-at-dir pail d)))
+    dir)))
 
 
 (defn move-append
@@ -131,9 +147,6 @@
   "delete pail path recursively"
   [path]
   (.delete path true))
-
-(defn get-root [pail]
-  (.getInstanceRoot pail))
 
 (defn writer [pail]
   (.openWrite pail))
